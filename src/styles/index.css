@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@source "../../src";
+
 .font-inter { font-family: 'Inter', system-ui, sans-serif; }
 .font-roboto { font-family: 'Roboto', system-ui, sans-serif; }
 .font-open-sans { font-family: 'Open Sans', system-ui, sans-serif; }

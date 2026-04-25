@@ -8,6 +8,7 @@ A powerful, customizable React table component with sorting, filtering, global s
 npm install @codefish24/react-flexi-table
 ```
 
+
 ## Quick Start
 
 ```jsx
