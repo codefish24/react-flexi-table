@@ -1,0 +1,7 @@
+.font-inter { font-family: 'Inter', system-ui, sans-serif; }
+.font-roboto { font-family: 'Roboto', system-ui, sans-serif; }
+.font-open-sans { font-family: 'Open Sans', system-ui, sans-serif; }
+.font-merriweather { font-family: 'Merriweather', serif; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.react-flexi-table-animate { animation: fadeIn 0.3s ease-out; }
+@media (max-width: 768px) { .react-flexi-table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; } }

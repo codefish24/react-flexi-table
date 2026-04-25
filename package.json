@@ -1,0 +1,52 @@
+{
+  "name": "@codefish24/react-flexi-table",
+  "version": "0.1.0",
+  "description": "A powerful, customizable React table component with sorting, filtering, global search, and dual framework support",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "style": "dist/index.css",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    },
+    "./dist/index.css": "./dist/index.css"
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "keywords": ["react", "table", "datatable", "sorting", "filtering", "tailwind", "bootstrap"],
+  "author": "codefish24",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codefish24/react-flexi-table.git"
+  },
+  "homepage": "https://github.com/codefish24/react-flexi-table#readme",
+  "bugs": {
+    "url": "https://github.com/codefish24/react-flexi-table/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.0",
+    "@babel/preset-react": "^7.22.0",
+    "@rollup/plugin-babel": "^7.0.0",
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-terser": "^1.0.0",
+    "postcss": "^8.4.24",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "rollup": "^4.0.0",
+    "rollup-plugin-postcss": "^4.0.0",
+    "tailwindcss": "^4.0.0"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "prepublishOnly": "npm run build"
+  }
+}
