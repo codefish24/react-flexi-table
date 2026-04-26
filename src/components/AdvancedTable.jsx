@@ -50,40 +50,46 @@ export function AdvancedTable({
 
   const tailwindStyles = {
     container: `${fontFamily} w-full`,
-    searchContainer: 'mb-4 p-4 bg-gray-50 rounded-lg border',
-    searchInput: 'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
-    table: 'min-w-full bg-white border rounded-lg overflow-hidden',
-    tableHeader: 'bg-gray-50',
-    tableRow: 'border-b hover:bg-gray-50',
-    tableCell: 'px-4 py-3',
-    filterInput: 'mt-1 w-full px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500',
-    sortIcon: 'ml-1',
-    sortButton: 'flex items-center cursor-pointer hover:text-blue-600 font-semibold',
-    emptyState: 'text-center py-8 text-gray-500',
-    pagination: 'flex items-center justify-between mt-4 px-1',
-    paginationInfo: 'text-sm text-gray-600',
+    card: 'bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden',
+    searchContainer: 'px-6 pt-5 pb-4 border-b border-gray-100',
+    searchWrapper: 'relative',
+    searchInput: 'w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-blue-400 transition-all',
+    table: 'min-w-full',
+    tableHeader: 'bg-gray-50 border-b border-gray-100',
+    tableRow: 'border-b border-gray-50 hover:bg-blue-50/40 transition-colors duration-100',
+    tableCell: 'px-6 py-3.5 text-sm text-gray-700',
+    thCell: 'px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap',
+    filterInput: 'mt-2 w-full px-2.5 py-1.5 text-xs bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 normal-case tracking-normal font-normal transition-all',
+    sortIcon: 'ml-1.5 inline-flex',
+    sortButton: 'inline-flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors font-semibold uppercase tracking-wider text-xs',
+    emptyState: 'text-center py-16 text-gray-400 text-sm',
+    pagination: 'flex items-center justify-between px-6 py-4 border-t border-gray-100',
+    paginationInfo: 'text-xs text-gray-400 font-medium',
     paginationControls: 'flex items-center gap-1',
-    paginationButton: 'px-3 py-1 text-sm border rounded hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed',
-    paginationButtonActive: 'px-3 py-1 text-sm border rounded bg-blue-500 text-white font-semibold',
-    paginationSelect: 'px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500 mr-2',
+    paginationButton: 'w-8 h-8 inline-flex items-center justify-center text-sm rounded-lg text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors',
+    paginationButtonActive: 'w-8 h-8 inline-flex items-center justify-center text-sm rounded-lg bg-blue-500 text-white font-semibold shadow-sm',
+    paginationSelect: 'text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-400 bg-white text-gray-600 mr-2 cursor-pointer',
   };
 
   const bootstrapStyles = {
     container: `${fontFamily} container-fluid p-0`,
-    searchContainer: 'mb-4 p-3 bg-light rounded border',
-    searchInput: 'form-control',
-    table: 'table table-striped table-bordered table-hover',
-    tableHeader: 'table-dark',
+    card: 'card shadow-sm border-0',
+    searchContainer: 'card-header bg-white border-bottom p-3',
+    searchWrapper: 'position-relative',
+    searchInput: 'form-control form-control-sm ps-5',
+    table: 'table table-hover mb-0',
+    tableHeader: 'table-light',
     tableRow: '',
-    tableCell: 'align-middle',
+    tableCell: 'align-middle px-3 py-2',
+    thCell: 'align-middle px-3 py-2 fw-semibold text-uppercase small text-muted',
     filterInput: 'form-control form-control-sm mt-1',
     sortIcon: 'ms-1',
-    sortButton: 'd-flex align-items-center cursor-pointer user-select-none',
+    sortButton: 'd-inline-flex align-items-center gap-1 cursor-pointer user-select-none text-uppercase small fw-semibold',
     emptyState: 'text-center py-5 text-muted',
-    pagination: 'd-flex align-items-center justify-content-between mt-3',
+    pagination: 'd-flex align-items-center justify-content-between px-3 py-2 border-top',
     paginationInfo: 'text-muted small',
     paginationControls: 'd-flex align-items-center gap-1',
-    paginationButton: 'btn btn-sm btn-outline-secondary',
+    paginationButton: 'btn btn-sm btn-light',
     paginationButtonActive: 'btn btn-sm btn-primary',
     paginationSelect: 'form-select form-select-sm me-2',
   };
@@ -104,10 +110,19 @@ export function AdvancedTable({
 
   return (
     <div className={styles.container}>
+      <div className={styles.card}>
       {enableGlobalSearch && (
         <div className={styles.searchContainer}>
-          <input type="text" className={styles.searchInput} placeholder={globalSearchPlaceholder} 
-                 value={globalSearch} onChange={(e) => setGlobalSearch(e.target.value)} />
+          <div className={styles.searchWrapper}>
+            <svg
+              style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+              width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="6.5" cy="6.5" r="5" stroke="#9CA3AF" strokeWidth="1.5"/>
+              <path d="M10.5 10.5L14 14" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+            <input type="text" className={styles.searchInput} placeholder={globalSearchPlaceholder}
+                   value={globalSearch} onChange={(e) => setGlobalSearch(e.target.value)} />
+          </div>
         </div>
       )}
       <div className="overflow-x-auto">
@@ -151,7 +166,7 @@ export function AdvancedTable({
       {enablePagination && (
         <div className={styles.pagination}>
           <span className={styles.paginationInfo}>
-            {totalRows === 0 ? 'No results' : `Showing ${startRow}\u2013${endRow} of ${totalRows}`}
+            {totalRows === 0 ? 'No results' : `Showing ${startRow}–${endRow} of ${totalRows}`}
           </span>
           <div className={styles.paginationControls}>
             <select
@@ -166,25 +181,26 @@ export function AdvancedTable({
             </select>
             <button type="button" className={styles.paginationButton}
               onClick={() => handlePageChange(1)} disabled={currentPage === 1} aria-label="First page">
-              \u00ab
+              <IconChevronsLeft />
             </button>
             <button type="button" className={styles.paginationButton}
               onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} aria-label="Previous page">
-              \u2039
+              <IconChevronLeft />
             </button>
             <PageNumbers currentPage={currentPage} totalPages={totalPages}
               onPageChange={handlePageChange} styles={styles} />
             <button type="button" className={styles.paginationButton}
               onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} aria-label="Next page">
-              \u203a
+              <IconChevronRight />
             </button>
             <button type="button" className={styles.paginationButton}
               onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} aria-label="Last page">
-              \u00bb
+              <IconChevronsRight />
             </button>
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
@@ -207,7 +223,7 @@ function PageNumbers({ currentPage, totalPages, onPageChange, styles }) {
     <>
       {pages.map(p =>
         typeof p === 'string' ? (
-          <span key={p} style={{ padding: '0 2px', opacity: 0.5 }} aria-hidden="true">\u2026</span>
+          <span key={p} style={{ width: 32, height: 32, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', color: '#9CA3AF' }} aria-hidden="true">&hellip;</span>
         ) : (
           <button
             key={p}
@@ -222,5 +238,36 @@ function PageNumbers({ currentPage, totalPages, onPageChange, styles }) {
         )
       )}
     </>
+  );
+}
+
+function IconChevronLeft() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+function IconChevronRight() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+function IconChevronsLeft() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 12L4 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M13 12L9 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+function IconChevronsRight() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M3 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M8 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
   );
 }

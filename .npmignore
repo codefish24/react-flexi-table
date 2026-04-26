@@ -1,3 +1,9 @@
 src/
 node_modules/
 rollup.config.js
+postcss.config.js
+babel.config.js
+vitest.config.js
+demo/
+*.log
+.DS_Store

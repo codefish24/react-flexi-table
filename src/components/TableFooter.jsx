@@ -4,8 +4,8 @@ export function TableFooter({ columns, summaries, uiFramework, styles, showColum
   if (!showColumnSummaries) return null;
 
   const footerRowClass = uiFramework === 'tailwind'
-    ? 'bg-gray-100 font-semibold border-t-2 border-gray-300'
-    : 'table-active fw-bold';
+    ? 'bg-blue-50/60 font-semibold border-t border-blue-100 text-blue-900'
+    : 'table-primary fw-bold';
 
   return (
     <tfoot>
