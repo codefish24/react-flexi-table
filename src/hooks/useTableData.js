@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 function compareValues(aVal, bVal, direction) {
   const directionMultiplier = direction === 'asc' ? 1 : -1;
@@ -17,10 +17,15 @@ function compareValues(aVal, bVal, direction) {
   }) * directionMultiplier;
 }
 
-export function useTableData(data, columns, enableSorting, enableFiltering, enableGlobalSearch) {
+export function useTableData(
+  data, columns, enableSorting, enableFiltering, enableGlobalSearch,
+  enablePagination, defaultPageSize,
+) {
   const [sortConfig, setSortConfig] = useState(null);
   const [filters, setFilters] = useState({});
   const [globalSearch, setGlobalSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(defaultPageSize ?? 10);
 
   const handleSort = (key) => {
     if (!enableSorting) return;
@@ -35,17 +40,16 @@ export function useTableData(data, columns, enableSorting, enableFiltering, enab
     setFilters(prev => {
       const next = { ...prev };
       const normalizedValue = value.trim();
-
       if (!normalizedValue) {
         delete next[key];
       } else {
         next[key] = normalizedValue;
       }
-
       return next;
     });
   };
 
+  // Full filtered + sorted data — used for summaries and pagination count
   const processedData = useMemo(() => {
     let result = [...data];
     if (enableGlobalSearch && globalSearch.trim()) {
@@ -64,12 +68,50 @@ export function useTableData(data, columns, enableSorting, enableFiltering, enab
       });
     }
     if (sortConfig && enableSorting) {
-      result.sort((a, b) => {
-        return compareValues(a[sortConfig.key], b[sortConfig.key], sortConfig.direction);
-      });
+      result.sort((a, b) => compareValues(a[sortConfig.key], b[sortConfig.key], sortConfig.direction));
     }
     return result;
   }, [data, sortConfig, filters, globalSearch, columns, enableSorting, enableFiltering, enableGlobalSearch]);
 
-  return { processedData, sortConfig, filters, globalSearch, handleSort, handleFilter, setGlobalSearch };
+  // Reset to page 1 whenever filters, search, or source data change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, globalSearch, data]);
+
+  const totalRows = processedData.length;
+  const totalPages = enablePagination && pageSize > 0 ? Math.max(1, Math.ceil(totalRows / pageSize)) : 1;
+  const safePage = Math.min(currentPage, totalPages);
+
+  // Paginated slice for table body rendering
+  const displayData = useMemo(() => {
+    if (!enablePagination) return processedData;
+    const start = (safePage - 1) * pageSize;
+    return processedData.slice(start, start + pageSize);
+  }, [processedData, enablePagination, safePage, pageSize]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(Math.max(1, Math.min(page, totalPages)));
+  };
+
+  const handlePageSizeChange = (size) => {
+    setPageSize(size);
+    setCurrentPage(1);
+  };
+
+  return {
+    processedData,       // full filtered+sorted data (for footer summaries)
+    displayData,         // paginated slice (for table body)
+    totalRows,
+    totalPages,
+    currentPage: safePage,
+    pageSize,
+    handlePageChange,
+    handlePageSizeChange,
+    sortConfig,
+    filters,
+    globalSearch,
+    handleSort,
+    handleFilter,
+    setGlobalSearch,
+  };
 }

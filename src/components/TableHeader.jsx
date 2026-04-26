@@ -17,10 +17,16 @@ export function TableHeader({ columns, sortConfig, filters, enableSorting, enabl
     <thead className={uiFramework === 'tailwind' ? styles.tableHeader : ''}>
       <tr>
         {columns.map(col => {
-          const sortable = col.sortable !== false;
+          const sortable = col.sortable !== false; // default: sortable per column
 
           return (
-          <th key={col.key} className={styles.tableCell} scope="col" aria-sort={getAriaSort(col.key, sortable)}>
+          <th
+            key={col.key}
+            className={[styles.tableCell, col.headerClassName].filter(Boolean).join(' ')}
+            scope="col"
+            aria-sort={getAriaSort(col.key, sortable)}
+            style={{ textAlign: col.align, width: col.width, minWidth: col.minWidth }}
+          >
             {enableSorting && sortable ? (
               <button
                 type="button"
@@ -34,7 +40,7 @@ export function TableHeader({ columns, sortConfig, filters, enableSorting, enabl
             ) : (
               <span>{col.title}</span>
             )}
-            {enableFiltering && col.filterable !== false && (
+            {enableFiltering && col.filterable === true && (  // default: filter OFF per column
               <input type="text" className={styles.filterInput} placeholder={`Filter ${col.title}`}
                      aria-label={`Filter ${col.title}`}
                      value={filters[col.key] || ''} onChange={(e) => onFilter(col.key, e.target.value)}

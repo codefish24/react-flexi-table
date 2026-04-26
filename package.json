@@ -1,6 +1,7 @@
 {
   "name": "@codefish24/react-flexi-table",
-  "version": "0.1.1",
+  "version": "0.1.2",
+  "type": "module",
   "description": "A powerful, customizable React table component with sorting, filtering, global search, and dual framework support",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
