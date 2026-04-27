@@ -27,9 +27,9 @@ const STATUS_COLORS = {
 // ── Column definitions ───────────────────────────────────────────────────────
 const COLUMNS = [
   { key: 'id',         title: '#',          width: 56,  align: 'center', sortable: true },
-  { key: 'name',       title: 'Name',       sortable: true, filterable: true },
-  { key: 'age',        title: 'Age',        width: 72,  align: 'center', sortable: true },
-  { key: 'department', title: 'Department', sortable: true, filterable: true },
+  { key: 'name',       title: 'Name',       sortable: true, filterable: true, filterType: 'text' },
+  { key: 'age',        title: 'Age',        width: 72,  align: 'center', sortable: true, filterable: true, filterType: 'number' },
+  { key: 'department', title: 'Department', sortable: true, filterable: true, filterType: 'select', filterOptions: ['Engineering', 'Design', 'Marketing', 'Sales', 'HR', 'Finance'] },
   {
     key: 'salary',
     title: 'Salary',
@@ -49,6 +49,9 @@ const COLUMNS = [
     key: 'status',
     title: 'Status',
     sortable: true,
+    filterable: true,
+    filterType: 'select',
+    filterOptions: ['Active', 'On Leave', 'Remote'],
     render: (val) => (
       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[val]}`}>
         {val}
@@ -56,7 +59,7 @@ const COLUMNS = [
     ),
   },
   { key: 'email',  title: 'Email',  sortable: true },
-  { key: 'joined', title: 'Joined', sortable: true, width: 110 },
+  { key: 'joined', title: 'Joined', sortable: true, width: 110, filterable: true, filterType: 'daterange' },
 ];
 
 // ── Demo App ─────────────────────────────────────────────────────────────────

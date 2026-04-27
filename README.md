@@ -1,6 +1,6 @@
 # react-flexi-table
 
-A modern, lightweight React data table with sorting, global search, column filters, pagination, footer summaries, and support for both **Tailwind CSS** and **Bootstrap**.
+A modern, lightweight React data table with sorting, global search, typed column filters, pagination, footer summaries, and support for both **Tailwind CSS** and **Bootstrap**.
 
 [![npm](https://img.shields.io/npm/v/@codefish24/react-flexi-table)](https://www.npmjs.com/package/@codefish24/react-flexi-table)
 [![license](https://img.shields.io/npm/l/@codefish24/react-flexi-table)](LICENSE)
@@ -11,7 +11,7 @@ A modern, lightweight React data table with sorting, global search, column filte
 
 - **Sorting** — click any column header to sort asc / desc / clear
 - **Global search** — instant full-table search across all columns
-- **Column filters** — opt-in per-column filter inputs
+- **Typed column filters** — text, select, number, date, date range, boolean — opt-in per column
 - **Pagination** — built-in page navigation with page-size selector
 - **Footer summaries** — computed over all filtered rows (not just current page)
 - **Custom cell rendering** — full control via `col.render`
@@ -88,6 +88,8 @@ export default function App() {
 | `title` | `string` | **required** | Column header label |
 | `sortable` | `boolean` | `true` | Allow sorting on this column |
 | `filterable` | `boolean` | `false` | Show a filter input (requires `enableFiltering={true}`) |
+| `filterType` | `string` | `'text'` | Filter input type — see table below |
+| `filterOptions` | `string[]` | — | Options for `'select'` filter type |
 | `render` | `function` | — | `(value, row) => ReactNode` — custom cell renderer |
 | `footerSummary` | `function` | — | `(allFilteredRows) => ReactNode\|string` — footer cell content |
 | `align` | `string` | — | `'left'` \| `'center'` \| `'right'` |
@@ -95,6 +97,17 @@ export default function App() {
 | `minWidth` | `number\|string` | — | Minimum column width |
 | `headerClassName` | `string` | — | Extra CSS class on the `<th>` |
 | `cellClassName` | `string` | — | Extra CSS class on every `<td>` in this column |
+
+### Filter types (`filterType`)
+
+| Value | UI rendered | Match behaviour |
+|---|---|---|
+| `'text'` (default) | Text input | Case-insensitive substring match |
+| `'select'` | Dropdown | Exact string match — provide `filterOptions: []` |
+| `'number'` | Number input | Exact numeric equality |
+| `'boolean'` | Yes / No / All dropdown | Boolean / truthy equality |
+| `'date'` | Date picker | Matches rows whose value starts with the selected date string |
+| `'daterange'` | Two date pickers (From / To) | Inclusive date range |
 
 ---
 
@@ -116,15 +129,51 @@ export default function App() {
 
 ```jsx
 const columns = [
-  { key: 'name',  title: 'Name',  filterable: true },
-  { key: 'email', title: 'Email', filterable: true },
-  { key: 'age',   title: 'Age' },  // no filter on this column
+  { key: 'name',  title: 'Name',  filterable: true },           // text (default)
+  { key: 'email', title: 'Email', filterable: true },           // text (default)
+  { key: 'age',   title: 'Age' },                               // no filter
 ];
 
 <AdvancedTable
   data={data}
   columns={columns}
   enableGlobalSearch={true}
+  enableFiltering={true}
+/>
+```
+
+### Typed column filters
+
+```jsx
+const columns = [
+  // Free-text search
+  { key: 'name', title: 'Name', filterable: true, filterType: 'text' },
+
+  // Dropdown — pick from a fixed list
+  {
+    key: 'department',
+    title: 'Department',
+    filterable: true,
+    filterType: 'select',
+    filterOptions: ['Engineering', 'Design', 'Marketing', 'Sales'],
+  },
+
+  // Numeric equality
+  { key: 'age', title: 'Age', filterable: true, filterType: 'number' },
+
+  // Yes / No toggle
+  { key: 'active', title: 'Active', filterable: true, filterType: 'boolean' },
+
+  // Single date picker
+  { key: 'created', title: 'Created', filterable: true, filterType: 'date' },
+
+  // From / To date range
+  { key: 'joined', title: 'Joined', filterable: true, filterType: 'daterange' },
+];
+
+<AdvancedTable
+  data={data}
+  columns={columns}
   enableFiltering={true}
 />
 ```

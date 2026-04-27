@@ -1,5 +1,109 @@
 import React from 'react';
 
+function FilterInput({ col, filters, onFilter, styles }) {
+  const type = col.filterType || 'text';
+  const val = filters[col.key];
+  const inputBase = styles.filterInput;
+
+  const handleChange = (value) => onFilter(col.key, value);
+
+  if (type === 'select') {
+    return (
+      <select
+        className={inputBase}
+        aria-label={`Filter ${col.title}`}
+        value={val || ''}
+        onChange={(e) => handleChange(e.target.value)}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <option value="">All</option>
+        {(col.filterOptions || []).map(opt => (
+          <option key={opt} value={opt}>{opt}</option>
+        ))}
+      </select>
+    );
+  }
+
+  if (type === 'boolean') {
+    return (
+      <select
+        className={inputBase}
+        aria-label={`Filter ${col.title}`}
+        value={val || ''}
+        onChange={(e) => handleChange(e.target.value)}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <option value="">All</option>
+        <option value="true">Yes</option>
+        <option value="false">No</option>
+      </select>
+    );
+  }
+
+  if (type === 'number') {
+    return (
+      <input
+        type="number"
+        className={inputBase}
+        placeholder={`Filter ${col.title}`}
+        aria-label={`Filter ${col.title}`}
+        value={val || ''}
+        onChange={(e) => handleChange(e.target.value)}
+        onClick={(e) => e.stopPropagation()}
+      />
+    );
+  }
+
+  if (type === 'date') {
+    return (
+      <input
+        type="date"
+        className={inputBase}
+        aria-label={`Filter ${col.title}`}
+        value={val || ''}
+        onChange={(e) => handleChange(e.target.value)}
+        onClick={(e) => e.stopPropagation()}
+      />
+    );
+  }
+
+  if (type === 'daterange') {
+    const from = val?.from || '';
+    const to = val?.to || '';
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }} onClick={(e) => e.stopPropagation()}>
+        <input
+          type="date"
+          className={inputBase}
+          aria-label={`${col.title} from`}
+          value={from}
+          onChange={(e) => handleChange({ from: e.target.value, to })}
+        />
+        <input
+          type="date"
+          className={inputBase}
+          aria-label={`${col.title} to`}
+          value={to}
+          onChange={(e) => handleChange({ from, to: e.target.value })}
+        />
+      </div>
+    );
+  }
+
+  // default: text
+  return (
+    <input
+      type="text"
+      className={inputBase}
+      placeholder={`Filter ${col.title}`}
+      aria-label={`Filter ${col.title}`}
+      value={val || ''}
+      onChange={(e) => handleChange(e.target.value)}
+      onClick={(e) => e.stopPropagation()}
+    />
+  );
+}
+
 export function TableHeader({ columns, sortConfig, filters, enableSorting, enableFiltering, onSort, onFilter, uiFramework, styles }) {
   const getAriaSort = (columnKey, sortable) => {
     if (!enableSorting || !sortable) return 'none';
@@ -37,25 +141,24 @@ export function TableHeader({ columns, sortConfig, filters, enableSorting, enabl
               aria-sort={getAriaSort(col.key, sortable)}
               style={{ textAlign: col.align, width: col.width, minWidth: col.minWidth }}
             >
-              {enableSorting && sortable ? (
-                <button
-                  type="button"
-                  className={styles.sortButton}
-                  onClick={() => onSort(col.key)}
-                  aria-label={`Sort by ${col.title}`}
-                >
-                  {col.title}
-                  {getSortIcon(col.key)}
-                </button>
-              ) : (
-                <span>{col.title}</span>
-              )}
-              {enableFiltering && col.filterable === true && (
-                <input type="text" className={styles.filterInput} placeholder={`Filter ${col.title}`}
-                       aria-label={`Filter ${col.title}`}
-                       value={filters[col.key] || ''} onChange={(e) => onFilter(col.key, e.target.value)}
-                       onClick={(e) => e.stopPropagation()} />
-              )}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                {enableSorting && sortable ? (
+                  <button
+                    type="button"
+                    className={styles.sortButton}
+                    onClick={() => onSort(col.key)}
+                    aria-label={`Sort by ${col.title}`}
+                  >
+                    {col.title}
+                    {getSortIcon(col.key)}
+                  </button>
+                ) : (
+                  <span>{col.title}</span>
+                )}
+                {enableFiltering && col.filterable === true && (
+                  <FilterInput col={col} filters={filters} onFilter={onFilter} styles={styles} />
+                )}
+              </div>
             </th>
           );
         })}

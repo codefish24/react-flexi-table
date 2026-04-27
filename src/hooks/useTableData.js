@@ -39,15 +39,31 @@ export function useTableData(
     if (!enableFiltering) return;
     setFilters(prev => {
       const next = { ...prev };
-      const normalizedValue = value.trim();
-      if (!normalizedValue) {
-        delete next[key];
+      // daterange value is an object { from, to }
+      if (value !== null && typeof value === 'object') {
+        if (!value.from && !value.to) {
+          delete next[key];
+        } else {
+          next[key] = value;
+        }
       } else {
-        next[key] = normalizedValue;
+        const normalizedValue = String(value ?? '').trim();
+        if (!normalizedValue) {
+          delete next[key];
+        } else {
+          next[key] = normalizedValue;
+        }
       }
       return next;
     });
   };
+
+  // Build a lookup of filterType per column key
+  const colFilterTypeMap = useMemo(() => {
+    const map = {};
+    columns.forEach(col => { map[col.key] = col.filterType || 'text'; });
+    return map;
+  }, [columns]);
 
   // Full filtered + sorted data — used for summaries and pagination count
   const processedData = useMemo(() => {
@@ -60,10 +76,34 @@ export function useTableData(
       }));
     }
     if (enableFiltering) {
-      Object.entries(filters).forEach(([key, val]) => {
-        if (val) result = result.filter(row => {
+      Object.entries(filters).forEach(([key, filterVal]) => {
+        if (!filterVal && filterVal !== 0) return;
+        const filterType = colFilterTypeMap[key] || 'text';
+        result = result.filter(row => {
           const rowVal = row[key];
-          return rowVal != null && String(rowVal).toLowerCase().includes(val.toLowerCase());
+          if (rowVal == null) return false;
+          switch (filterType) {
+            case 'select':
+              return String(rowVal) === String(filterVal);
+            case 'boolean':
+              if (filterVal === 'true') return rowVal === true || rowVal === 'true' || rowVal === 1;
+              if (filterVal === 'false') return rowVal === false || rowVal === 'false' || rowVal === 0;
+              return true;
+            case 'number':
+              return Number(rowVal) === Number(filterVal);
+            case 'date':
+              return String(rowVal).startsWith(String(filterVal));
+            case 'daterange': {
+              const rowDate = new Date(rowVal);
+              if (isNaN(rowDate)) return false;
+              if (filterVal.from && new Date(rowVal) < new Date(filterVal.from)) return false;
+              if (filterVal.to && new Date(rowVal) > new Date(filterVal.to + 'T23:59:59')) return false;
+              return true;
+            }
+            case 'text':
+            default:
+              return String(rowVal).toLowerCase().includes(String(filterVal).toLowerCase());
+          }
         });
       });
     }
@@ -71,7 +111,7 @@ export function useTableData(
       result.sort((a, b) => compareValues(a[sortConfig.key], b[sortConfig.key], sortConfig.direction));
     }
     return result;
-  }, [data, sortConfig, filters, globalSearch, columns, enableSorting, enableFiltering, enableGlobalSearch]);
+  }, [data, sortConfig, filters, globalSearch, columns, enableSorting, enableFiltering, enableGlobalSearch, colFilterTypeMap]);
 
   // Reset to page 1 whenever filters, search, or source data change
   useEffect(() => {

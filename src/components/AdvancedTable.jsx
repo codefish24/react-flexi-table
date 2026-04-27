@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { useTableData } from '../hooks/useTableData';
 import { TableHeader } from './TableHeader';
 import { TableFooter } from './TableFooter';
@@ -19,6 +19,20 @@ export function AdvancedTable({
   globalSearchPlaceholder = 'Search...',
   footerSummaryConfig = { enabled: false, showColumnSummaries: true }, // default: footer group OFF
 }) {
+  // Show star reminder once on first mount (dev only)
+  const _starShown = useRef(false);
+  useEffect(() => {
+    const isDev = import.meta?.env?.DEV ?? process.env.NODE_ENV === 'development';
+    if (!isDev || _starShown.current) return;
+    _starShown.current = true;
+    setTimeout(() => {
+      console.log(
+        '%c✨ Enjoying react-flexi-table? Give it a star → https://github.com/codefish24/react-flexi-table',
+        'color: #f59e0b; font-size: 14px; font-weight: bold;'
+      );
+    }, 1000);
+  }, []);
+
   const {
     processedData,
     displayData,
