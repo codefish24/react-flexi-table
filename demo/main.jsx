@@ -26,10 +26,10 @@ const STATUS_COLORS = {
 
 // ── Column definitions ───────────────────────────────────────────────────────
 const COLUMNS = [
-  { key: 'id',         title: '#',          width: 56,  align: 'center', sortable: true },
-  { key: 'name',       title: 'Name',       sortable: true, filterable: true, filterType: 'text' },
-  { key: 'age',        title: 'Age',        width: 72,  align: 'center', sortable: true, filterable: true, filterType: 'number' },
-  { key: 'department', title: 'Department', sortable: true, filterable: true, filterType: 'select', filterOptions: ['Engineering', 'Design', 'Marketing', 'Sales', 'HR', 'Finance'] },
+  { key: 'id',         title: '#',          width: 56,  align: 'center', sortable: true, headerCase: 'none' },
+  { key: 'name',       title: 'Name',       sortable: true, filterable: true, filterType: 'text', headerCase: 'title' },
+  { key: 'age',        title: 'Age',        width: 72,  align: 'center', sortable: true, filterable: true, filterType: 'number', headerCase: 'title' },
+  { key: 'department', title: 'Department', sortable: true, filterable: true, filterType: 'select', filterOptions: ['Engineering', 'Design', 'Marketing', 'Sales', 'HR', 'Finance'], headerCase: 'title' },
   {
     key: 'salary',
     title: 'Salary',
@@ -58,8 +58,8 @@ const COLUMNS = [
       </span>
     ),
   },
-  { key: 'email',  title: 'Email',  sortable: true },
-  { key: 'joined', title: 'Joined', sortable: true, width: 110, filterable: true, filterType: 'daterange' },
+  { key: 'email',  title: 'Email',  sortable: true, headerCase: 'title' },
+  { key: 'joined', title: 'Joined', sortable: true, width: 110, filterable: true, filterType: 'daterange', headerCase: 'title' },
 ];
 
 // ── Demo App ─────────────────────────────────────────────────────────────────

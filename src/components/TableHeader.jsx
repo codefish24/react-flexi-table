@@ -104,6 +104,25 @@ function FilterInput({ col, filters, onFilter, styles }) {
   );
 }
 
+function transformCase(text, caseType) {
+  switch (caseType) {
+    case 'uppercase':
+      return text.toUpperCase();
+    case 'lowercase':
+      return text.toLowerCase();
+    case 'title':
+      return text.replace(/\w\S*/g, (txt) =>
+        txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+      );
+    case 'sentence':
+      return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+    case 'none':
+      return text;
+    default:
+      return text.toUpperCase();
+  }
+}
+
 export function TableHeader({ columns, sortConfig, filters, enableSorting, enableFiltering, onSort, onFilter, uiFramework, styles }) {
   const getAriaSort = (columnKey, sortable) => {
     if (!enableSorting || !sortable) return 'none';
@@ -133,6 +152,7 @@ export function TableHeader({ columns, sortConfig, filters, enableSorting, enabl
       <tr>
         {columns.map(col => {
           const sortable = col.sortable !== false;
+          const headerText = transformCase(col.title, col.headerCase);
           return (
             <th
               key={col.key}
@@ -149,11 +169,11 @@ export function TableHeader({ columns, sortConfig, filters, enableSorting, enabl
                     onClick={() => onSort(col.key)}
                     aria-label={`Sort by ${col.title}`}
                   >
-                    {col.title}
+                    {headerText}
                     {getSortIcon(col.key)}
                   </button>
                 ) : (
-                  <span>{col.title}</span>
+                  <span>{headerText}</span>
                 )}
                 {enableFiltering && col.filterable === true && (
                   <FilterInput col={col} filters={filters} onFilter={onFilter} styles={styles} />

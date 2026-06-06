@@ -97,6 +97,7 @@ export default function App() {
 | `minWidth` | `number\|string` | — | Minimum column width |
 | `headerClassName` | `string` | — | Extra CSS class on the `<th>` |
 | `cellClassName` | `string` | — | Extra CSS class on every `<td>` in this column |
+| `headerCase` | `string` | `'uppercase'` | Header text transform: `'uppercase'`, `'lowercase'`, `'title'`, `'sentence'`, or `'none'` |
 
 ### Filter types (`filterType`)
 
@@ -197,6 +198,19 @@ const columns = [
     align: 'right',
     render: (value) => `$${value.toLocaleString()}`,
   },
+];
+```
+
+### Header text case
+
+Control the column header text transformation per column:
+
+```jsx
+const columns = [
+  { key: 'name', title: 'Name', headerCase: 'title' },        // "Name"
+  { key: 'email', title: 'Email Address', headerCase: 'sentence' }, // "Email address"
+  { key: 'status', title: 'Status', headerCase: 'none' },     // "Status" (as-is)
+  { key: 'age', title: 'Age' },                               // "AGE" (default: uppercase)
 ];
 ```
 
