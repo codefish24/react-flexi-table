@@ -123,7 +123,7 @@ function transformCase(text, caseType) {
   }
 }
 
-export function TableHeader({ columns, sortConfig, filters, enableSorting, enableFiltering, onSort, onFilter, uiFramework, styles }) {
+export function TableHeader({ columns, sortConfig, filters, enableSorting, enableFiltering, onSort, onFilter, uiFramework, styles, fontSize }) {
   const getAriaSort = (columnKey, sortable) => {
     if (!enableSorting || !sortable) return 'none';
     if (sortConfig?.key !== columnKey) return 'none';
@@ -146,6 +146,7 @@ export function TableHeader({ columns, sortConfig, filters, enableSorting, enabl
   };
 
   const thClass = styles.thCell || styles.tableCell;
+  const headerFontSize = fontSize?.header;
 
   return (
     <thead className={uiFramework === 'tailwind' ? styles.tableHeader : ''}>
@@ -159,7 +160,7 @@ export function TableHeader({ columns, sortConfig, filters, enableSorting, enabl
               className={[thClass, col.headerClassName].filter(Boolean).join(' ')}
               scope="col"
               aria-sort={getAriaSort(col.key, sortable)}
-              style={{ textAlign: col.align, width: col.width, minWidth: col.minWidth }}
+              style={{ textAlign: col.align, width: col.width, minWidth: col.minWidth, fontSize: headerFontSize }}
             >
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {enableSorting && sortable ? (

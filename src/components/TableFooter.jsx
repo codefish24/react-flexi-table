@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function TableFooter({ columns, summaries, uiFramework, styles, showColumnSummaries = true }) {
+export function TableFooter({ columns, summaries, uiFramework, styles, showColumnSummaries = true, fontSize }) {
   if (!showColumnSummaries) return null;
 
   const footerRowClass = uiFramework === 'tailwind'
@@ -14,7 +14,7 @@ export function TableFooter({ columns, summaries, uiFramework, styles, showColum
           <td
             key={col.key}
             className={[styles.tableCell, col.cellClassName].filter(Boolean).join(' ')}
-            style={{ textAlign: col.align }}
+            style={{ textAlign: col.align, fontSize: fontSize?.body }}
           >
             {summaries[col.key] ?? ''}
           </td>

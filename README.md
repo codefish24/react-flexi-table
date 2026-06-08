@@ -77,6 +77,7 @@ export default function App() {
 | `footerSummaryConfig` | `object` | `{ enabled: false, showColumnSummaries: true }` | Footer options |
 | `uiFramework` | `string` | `'tailwind'` | `'tailwind'` or `'bootstrap'` |
 | `fontFamily` | `string` | `'font-inter'` | CSS class applied to the container |
+| `fontSize` | `string \| object` | `'md'` | Font size preset (`'sm'`, `'md'`, `'lg'`) or custom object `{ wrapper, header, body }` |
 | `getRowKey` | `function` | — | `(row, index) => key` — custom row key resolver |
 | `globalSearchPlaceholder` | `string` | `'Search...'` | Placeholder for the search input |
 
@@ -213,6 +214,36 @@ const columns = [
   { key: 'age', title: 'Age' },                               // "AGE" (default: uppercase)
 ];
 ```
+
+### Font size
+
+Use a preset or customize font sizes for wrapper, header, and body cells:
+
+```jsx
+// Preset sizes
+<AdvancedTable data={data} columns={columns} fontSize="sm" />  // Small
+<AdvancedTable data={data} columns={columns} fontSize="md" />  // Medium (default)
+<AdvancedTable data={data} columns={columns} fontSize="lg" />  // Large
+
+// Custom sizes
+<AdvancedTable
+  data={data}
+  columns={columns}
+  fontSize={{
+    wrapper: '14px',   // Table wrapper base size
+    header: '12px',    // Header cells
+    body: '13px'       // Body cells
+  }}
+/>
+```
+
+**Preset values:**
+
+| Preset | Wrapper | Header | Body |
+|--------|---------|--------|------|
+| `sm` | 13px | 11px | 12px |
+| `md` | 14px | 12px | 13px |
+| `lg` | 16px | 14px | 15px |
 
 ### Footer summaries
 

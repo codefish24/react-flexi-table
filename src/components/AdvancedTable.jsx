@@ -3,6 +3,27 @@ import { useTableData } from '../hooks/useTableData';
 import { TableHeader } from './TableHeader';
 import { TableFooter } from './TableFooter';
 
+// Font size presets
+const FONT_SIZE_PRESETS = {
+  sm: { wrapper: '0.8125rem', header: '0.6875rem', body: '0.75rem' },     // 13px, 11px, 12px
+  md: { wrapper: '0.875rem', header: '0.75rem', body: '0.8125rem' },      // 14px, 12px, 13px (default)
+  lg: { wrapper: '1rem', header: '0.875rem', body: '0.9375rem' },         // 16px, 14px, 15px
+};
+
+function resolveFontSize(fontSize) {
+  if (typeof fontSize === 'string' && FONT_SIZE_PRESETS[fontSize]) {
+    return FONT_SIZE_PRESETS[fontSize];
+  }
+  if (typeof fontSize === 'object' && fontSize !== null) {
+    return {
+      wrapper: fontSize.wrapper || FONT_SIZE_PRESETS.md.wrapper,
+      header: fontSize.header || FONT_SIZE_PRESETS.md.header,
+      body: fontSize.body || FONT_SIZE_PRESETS.md.body,
+    };
+  }
+  return FONT_SIZE_PRESETS.md;
+}
+
 export function AdvancedTable({
   data = [],
   columns = [],
@@ -15,10 +36,14 @@ export function AdvancedTable({
   pageSizeOptions = [10, 25, 50, 100],
   uiFramework = 'tailwind',
   fontFamily = 'font-inter',
+  fontSize = 'md',                 // 'sm' | 'md' | 'lg' | { wrapper, header, body }
   getRowKey,
   globalSearchPlaceholder = 'Search...',
   footerSummaryConfig = { enabled: false, showColumnSummaries: true }, // default: footer group OFF
 }) {
+  // Resolve font sizes
+  const resolvedFontSize = useMemo(() => resolveFontSize(fontSize), [fontSize]);
+
   // Show star reminder once on first mount (dev only)
   const _starShown = useRef(false);
   useEffect(() => {
@@ -62,30 +87,30 @@ export function AdvancedTable({
     return result;
   }, [columns, processedData]);
 
-  const tailwindStyles = {
+  const tailwindStyles = useMemo(() => ({
     container: `${fontFamily} w-full`,
     card: 'bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden',
     searchContainer: 'px-6 pt-5 pb-4 border-b border-gray-100',
     searchWrapper: 'relative',
-    searchInput: 'w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-blue-400 transition-all',
+    searchInput: 'w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-blue-400 transition-all',
     table: 'min-w-full',
     tableHeader: 'bg-gray-50 border-b border-gray-100',
     tableRow: 'border-b border-gray-50 hover:bg-blue-50/40 transition-colors duration-100',
-    tableCell: 'px-6 py-3.5 text-sm text-gray-700',
-    thCell: 'px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap',
-    filterInput: 'mt-2 w-full px-2.5 py-1.5 text-xs bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 normal-case tracking-normal font-normal transition-all',
+    tableCell: 'px-6 py-3.5 text-gray-700',
+    thCell: 'px-6 py-3.5 font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap',
+    filterInput: 'mt-2 w-full px-2.5 py-1.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 normal-case tracking-normal font-normal transition-all',
     sortIcon: 'ml-1.5 inline-flex',
-    sortButton: 'inline-flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors font-semibold tracking-wider text-xs',
-    emptyState: 'text-center py-16 text-gray-400 text-sm',
+    sortButton: 'inline-flex items-center gap-1 cursor-pointer hover:text-blue-600 transition-colors font-semibold tracking-wider',
+    emptyState: 'text-center py-16 text-gray-400',
     pagination: 'flex items-center justify-between px-6 py-4 border-t border-gray-100',
-    paginationInfo: 'text-xs text-gray-400 font-medium',
+    paginationInfo: 'text-gray-400 font-medium',
     paginationControls: 'flex items-center gap-1',
-    paginationButton: 'w-8 h-8 inline-flex items-center justify-center text-sm rounded-lg text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors',
-    paginationButtonActive: 'w-8 h-8 inline-flex items-center justify-center text-sm rounded-lg bg-blue-500 text-white font-semibold shadow-sm',
-    paginationSelect: 'text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-400 bg-white text-gray-600 mr-2 cursor-pointer',
-  };
+    paginationButton: 'w-8 h-8 inline-flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors',
+    paginationButtonActive: 'w-8 h-8 inline-flex items-center justify-center rounded-lg bg-blue-500 text-white font-semibold shadow-sm',
+    paginationSelect: 'border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-400 bg-white text-gray-600 mr-2 cursor-pointer',
+  }), [fontFamily]);
 
-  const bootstrapStyles = {
+  const bootstrapStyles = useMemo(() => ({
     container: `${fontFamily} container-fluid p-0`,
     card: 'card shadow-sm border-0',
     searchContainer: 'card-header bg-white border-bottom p-3',
@@ -106,11 +131,11 @@ export function AdvancedTable({
     paginationButton: 'btn btn-sm btn-light',
     paginationButtonActive: 'btn btn-sm btn-primary',
     paginationSelect: 'form-select form-select-sm me-2',
-  };
+  }), [fontFamily]);
 
   const styles = useMemo(
     () => (uiFramework === 'tailwind' ? tailwindStyles : bootstrapStyles),
-    [uiFramework, fontFamily],
+    [uiFramework, tailwindStyles, bootstrapStyles],
   );
 
   const resolveRowKey = (row, idx) => {
@@ -123,7 +148,7 @@ export function AdvancedTable({
   const endRow = Math.min(currentPage * pageSize, totalRows);
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{ fontSize: resolvedFontSize.wrapper }}>
       <div className={styles.card}>
       {enableGlobalSearch && (
         <div className={styles.searchContainer}>
@@ -141,9 +166,10 @@ export function AdvancedTable({
       )}
       <div className="overflow-x-auto">
         <table className={styles.table}>
-          <TableHeader columns={columns} sortConfig={sortConfig} filters={filters} 
+          <TableHeader columns={columns} sortConfig={sortConfig} filters={filters}
                        enableSorting={enableSorting} enableFiltering={enableFiltering}
-                       onSort={handleSort} onFilter={handleFilter} uiFramework={uiFramework} styles={styles} />
+                       onSort={handleSort} onFilter={handleFilter} uiFramework={uiFramework} styles={styles}
+                       fontSize={resolvedFontSize} />
           <tbody>
             {displayData.map((row, idx) => (
               <tr key={resolveRowKey(row, idx)} className={styles.tableRow}>
@@ -151,7 +177,7 @@ export function AdvancedTable({
                   <td
                     key={col.key}
                     className={[styles.tableCell, col.cellClassName].filter(Boolean).join(' ')}
-                    style={{ textAlign: col.align, width: col.width, minWidth: col.minWidth }}
+                    style={{ textAlign: col.align, width: col.width, minWidth: col.minWidth, fontSize: resolvedFontSize.body }}
                   >
                     {col.render ? col.render(row[col.key], row) : row[col.key]}
                   </td>
@@ -160,7 +186,7 @@ export function AdvancedTable({
             ))}
             {displayData.length === 0 && (
               <tr>
-                <td colSpan={columns.length} className={styles.emptyState} role="status">
+                <td colSpan={columns.length} className={styles.emptyState} style={{ fontSize: resolvedFontSize.body }} role="status">
                   No data available
                 </td>
               </tr>
@@ -173,6 +199,7 @@ export function AdvancedTable({
               uiFramework={uiFramework}
               styles={styles}
               showColumnSummaries={footerSummaryConfig.showColumnSummaries}
+              fontSize={resolvedFontSize}
             />
           )}
         </table>
